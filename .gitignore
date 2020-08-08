@@ -1,0 +1,8 @@
+#Environments
+.env
+
+#PhpStorm
+.idea
+
+#Dependencies
+vendor

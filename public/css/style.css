@@ -1,0 +1,17 @@
+td.actions i {
+    color: #000000;
+}
+td.actions i:hover,
+td.actions i:focus {
+    color: #00000070;
+}
+.page-link {
+    color: #343a40;
+}
+.page-item.active .page-link {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+.overflow-x {
+    overflow-x: auto;
+}
