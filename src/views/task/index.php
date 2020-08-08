@@ -6,13 +6,16 @@
 
 $this->params['title'] = 'Задачи';
 $this->layout = 'layouts/base';
+
+$homeUrl = \App\helpers\RouterHelper::getUrl();
 ?>
 
 <?php
 $rowTemplate = (function ($index, \App\models\TaskModel $model) {
     $rowClass = $model->getIsCompleted() ? 'completed' : '';
-    $editButton = "<a href='/task/{$model->getId()}/edit'><i class='fas fa-pencil-alt'></i></a>";
-    $removeButton = "<a href='/task/{$model->getId()}/delete' data-method='POST' data-confirm='Are you sure you want to delete this entry?'><i class='fas fa-trash-alt'></i></a>";
+    $path = \App\helpers\RouterHelper::getUrl("/task/{$model->getId()}");
+    $editButton = "<a href='$path/edit'><i class='fas fa-pencil-alt'></i></a>";
+    $removeButton = "<a href='$path/delete' data-method='POST' data-confirm='Are you sure you want to delete this entry?'><i class='fas fa-trash-alt'></i></a>";
     return "<tr class='$rowClass'>
             <th scope=\"row\">{$index}</th>
             <td>{$model->getName()}</td>
@@ -24,31 +27,31 @@ $rowTemplate = (function ($index, \App\models\TaskModel $model) {
 ?>
 
 <?php
-$previousLink = (function ($currentPage) {
+$previousLink = (function ($currentPage) use ($homeUrl) {
     $isDisabled = $currentPage <= 1;
     $class = $isDisabled ? 'disabled' : '';
     $previousPage = $currentPage > 1 ? --$currentPage : 1;
     return "<li class=\"page-item {$class}\">
-                <a class=\"page-link\" href=\"/?page=$previousPage\" aria-label=\"Previous\">
+                <a class=\"page-link\" href=\"$homeUrl?page=$previousPage\" aria-label=\"Previous\">
                     <span aria-hidden=\"true\">&laquo;</span>
                 </a>
             </li>";
 });
 
-$nextLink = (function ($currentPage, $tasksCount) {
+$nextLink = (function ($currentPage, $tasksCount) use ($homeUrl) {
     $isDisabled = ($currentPage * 3) >= $tasksCount;
     $class = $isDisabled ? 'disabled' : '';
     $nextPage = $currentPage > 1 ? ++$currentPage : 2;
     return "<li class=\"page-item {$class}\">
-                <a class=\"page-link\" href=\"/?page=$nextPage\" aria-label=\"Next\">
+                <a class=\"page-link\" href=\"$homeUrl?page=$nextPage\" aria-label=\"Next\">
                     <span aria-hidden=\"true\">&raquo;</span>
                 </a>
             </li>";
 });
 
-$paginationItem = (function ($page, $active) {
+$paginationItem = (function ($page, $active) use ($homeUrl) {
     $class = $active ? 'active' : '';
-    return "<li class=\"page-item {$class}\"><a class=\"page-link\" href=\"/?page=$page\">$page</a></li>";
+    return "<li class=\"page-item {$class}\"><a class=\"page-link\" href=\"$homeUrl?page=$page\">$page</a></li>";
 });
 
 $paginationItems = (function ($currentPage, $tasksCount, $countOnPage) use ($paginationItem) {
@@ -63,7 +66,7 @@ $paginationItems = (function ($currentPage, $tasksCount, $countOnPage) use ($pag
 ?>
 
 <div>
-    <a href="/task/create" class="btn btn-dark mb-3">Create Task</a>
+    <a href="<?= \App\helpers\RouterHelper::getUrl('/task/create') ?>" class="btn btn-dark mb-3">Create Task</a>
     <div class="overflow-x">
         <table class="table">
             <thead class="thead-dark">

@@ -4,8 +4,8 @@
 namespace App\controllers;
 
 use App\base\Controller;
+use App\helpers\RouterHelper;
 use App\models\TaskModel;
-use Zend\Diactoros\Request;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
@@ -74,7 +74,7 @@ class TaskController extends Controller
             return new HtmlResponse("<h1>500 - Error</h1>");
         }
 
-        return new RedirectResponse('/');
+        return new RedirectResponse(RouterHelper::getUrl('/'));
     }
 
     /**
@@ -117,7 +117,7 @@ class TaskController extends Controller
             return new HtmlResponse("<h1>500 - Error</h1>");
         }
 
-        return new RedirectResponse('/');
+        return new RedirectResponse(RouterHelper::getUrl('/'));
     }
 
     /**
@@ -131,7 +131,7 @@ class TaskController extends Controller
 
         $this->findModel($id)->delete();
 
-        return new RedirectResponse('/');
+        return new RedirectResponse(RouterHelper::getUrl('/'));
     }
 
     /**

@@ -7,7 +7,7 @@ $this->layout = 'layouts/base';
 $action = $type === 'Create' ? '/task/add' : "/task/{$model->getId()}/update";
 ?>
 
-<form method="POST" action="<?= $action ?>">
+<form method="POST" action="<?= \App\helpers\RouterHelper::getUrl($action) ?>">
     <div class="form-group">
         <label for="nameFormControl">Name</label>
         <input type="text" class="form-control" name="name" id="nameFormControl" placeholder="Enter your name"

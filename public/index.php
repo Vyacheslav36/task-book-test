@@ -11,6 +11,8 @@ $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
 define('DB_HOST', $_ENV['DB_HOST']);
+define('BASE_URL', $_ENV['BASE_URL']);
+define('HOST_URL', $_ENV['HOST_URL']);
 define('DB_PORT', $_ENV['DB_PORT']);
 define('DB_DATABASE', $_ENV['DB_DATABASE']);
 define('DB_USERNAME', $_ENV['DB_USERNAME']);
@@ -27,11 +29,11 @@ $request = ServerRequestFactory::fromGlobals(
 $routerContainer = new RouterContainer();
 $map = $routerContainer->getMap();
 
-$map->get('task.index', '/', [TaskController::class, 'index']);
-$map->get('task.create', '/task/create', [TaskController::class, 'create']);
-$map->post('task.add', '/task/add', [TaskController::class, 'add']);
+$map->get('task.index', \App\helpers\RouterHelper::getUrl(), [TaskController::class, 'index']);
+$map->get('task.create', \App\helpers\RouterHelper::getUrl('/task/create'), [TaskController::class, 'create']);
+$map->post('task.add', \App\helpers\RouterHelper::getUrl('/task/add'), [TaskController::class, 'add']);
 
-$map->attach('task.', '/task/{id}', function ($map) {
+$map->attach('task.', \App\helpers\RouterHelper::getUrl('/task/{id}'), function ($map) {
     $map->get('edit', '/edit', [TaskController::class, 'edit']);
     $map->post('update', '/update', [TaskController::class, 'update']);
     $map->post('delete', '/delete', [TaskController::class, 'delete']);

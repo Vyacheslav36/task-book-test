@@ -20,4 +20,9 @@ class RouterHelper
 
         return $handler($request);
     }
+
+    public static function getUrl($path = '/')
+    {
+        return str_replace('//', '/', BASE_URL . $path);
+    }
 }
