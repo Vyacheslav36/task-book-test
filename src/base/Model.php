@@ -17,6 +17,7 @@ class Model
     const FIND_ALL = 'all';
 
     public $data = [];
+    public $errors = [];
 
     public function __construct()
     {
@@ -158,15 +159,13 @@ class Model
      */
     public function save()
     {
-        if ($this->data) {
+        if ($this->data && !count($this->errors)) {
             $keys = join(', ', array_keys($this->data));
             $values = "\"" . join('", "', array_values($this->data)) . "\"";
             if (!$this->isNewRecord && $this->getId()) {
                 $params = $this->getParamsForUpdate($this->data);
-                var_dump("update {$this->table} set $params where {$this->table}.id = {$this->getId()}");
                 return $this->db->query("update {$this->table} set $params where {$this->table}.id = {$this->getId()}");
             }
-            var_dump("insert into {$this->table} ($keys) values ($values)");
             return $this->db->query("insert into {$this->table} ($keys) values ($values)");
         }
         return false;

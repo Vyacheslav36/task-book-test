@@ -86,10 +86,20 @@ class TaskController extends Controller
         $model->setText($text);
 
         if (!$model->save()) {
+            if (count($model->errors)) {
+                FlashHelper::setFlash('alert', [
+                    'options' => ['class' => 'alert-danger'],
+                    'body' => join('<br/>', $model->errors)
+                ]);
+                $url = $_SERVER['HTTP_REFERER'] ?? RouterHelper::getUrl('/');
+                return new RedirectResponse($url);
+            }
+
             FlashHelper::setFlash('alert', [
                 'options' => ['class' => 'alert-danger'],
                 'body' => 'An error occurred while creating the task.'
             ]);
+
             return new RedirectResponse(RouterHelper::getUrl('/'));
         }
 
@@ -143,6 +153,15 @@ class TaskController extends Controller
         $model->setIsEdited(true);
 
         if (!$model->save()) {
+            if (count($model->errors)) {
+                FlashHelper::setFlash('alert', [
+                    'options' => ['class' => 'alert-danger'],
+                    'body' => join('<br/>', $model->errors)
+                ]);
+                $url = $_SERVER['HTTP_REFERER'] ?? RouterHelper::getUrl('/');
+                return new RedirectResponse($url);
+            }
+
             FlashHelper::setFlash('alert', [
                 'options' => ['class' => 'alert-danger'],
                 'body' => 'An error occurred while updating the task.'

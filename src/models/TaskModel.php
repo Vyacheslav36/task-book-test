@@ -57,16 +57,27 @@ class TaskModel extends Model
 
     public function setName($value)
     {
+        if (!ValidationHelper::checkOnRequired($value)) {
+            $this->errors[] = 'Name is required';
+        }
         $this->data['name'] = ValidationHelper::textFilter($value);
     }
 
     public function setEmail($value)
     {
+        if (!ValidationHelper::checkOnRequired($value)) {
+            $this->errors[] = 'Email is required';
+        } else if (!ValidationHelper::checkOnEmail($value)) {
+            $this->errors[] = 'Incorrect email';
+        }
         $this->data['email'] = ValidationHelper::textFilter($value);
     }
 
     public function setText($value)
     {
+        if (!ValidationHelper::checkOnRequired($value)) {
+            $this->errors[] = 'Text is required';
+        }
         $this->data['text'] = ValidationHelper::textFilter($value);
     }
 
