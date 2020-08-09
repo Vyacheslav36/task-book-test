@@ -49,22 +49,5 @@ td.actions i:focus {
     margin-left: 10px;
 }
 tr.completed {
-    opacity: 0.5;
-}
-tr.completed a {
-    pointer-events: none;
-    cursor: default;
-    text-decoration: none;
-}
-td, th {
-    position: relative;
-}
-tr.completed td:before,
-tr.completed th:before {
-    content: " ";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    border-bottom: 1px solid #111;
-    width: 100%;
+    opacity: .8;
 }

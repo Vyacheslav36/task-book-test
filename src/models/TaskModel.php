@@ -48,6 +48,13 @@ class TaskModel extends Model
             : null;
     }
 
+    public function getIsEdited()
+    {
+        return $this->data && isset($this->data['is_edited'])
+            ? $this->data['is_edited']
+            : null;
+    }
+
     public function setName($value)
     {
         $this->data['name'] = ValidationHelper::textFilter($value);
@@ -66,5 +73,10 @@ class TaskModel extends Model
     public function setIsCompleted($value)
     {
         $this->data['is_completed'] = $value;
+    }
+
+    public function setIsEdited($value)
+    {
+        $this->data['is_edited'] = $value;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\helpers\RouterHelper;
+use App\models\TaskModel;
 
 /* @var array $tasks */
 /* @var int $tasksCount */
@@ -17,25 +18,34 @@ $homeUrl = RouterHelper::getUrl();
 ?>
 
 <?php
-$rowTemplate = (function ($index, \App\models\TaskModel $model) use ($isAdmin) {
+$rowTemplate = (function ($index, TaskModel $model) use ($isAdmin) {
     $rowClass = $model->getIsCompleted() ? 'completed' : '';
+    $editedStatus = $model->getIsEdited() && $isAdmin ? 'Edited by admin' : '';
+    $completedStatus = $model->getIsCompleted() ? 'Completed' : 'Active';
+    $status = $editedStatus ? join(', ', [$completedStatus, $editedStatus]) : $completedStatus;
     $path = RouterHelper::getUrl("/task/{$model->getId()}");
-    $editPath = $model->getIsCompleted() ? '#' : "$path/edit";
-    $removePath = $model->getIsCompleted() ? '#' : "$path/delete";
-    $confirmationPath = $model->getIsCompleted() ? '#' : "$path/completed";
-    $editButton = "<a href='$editPath'><i class='fas fa-pencil-alt'></i></a>";
-    $removeButton = "<a href='$removePath' data-method='POST' data-confirm='Are you sure you want to delete this entry?'><i class='fas fa-trash-alt'></i></a>";
-    $confirmationButton = $isAdmin
-        ? "<a href='$confirmationPath' data-method='POST' data-confirm='Do you really want to complete this task?'><i class='fas fas fa-check'></i></a>"
+    $editButton = $isAdmin
+        ? "<a href='$path/edit'><i class='fas fa-pencil-alt'></i></a>"
+        : '';
+    $removeButton = $isAdmin
+        ? "<a href='$path/delete' data-method='POST' data-confirm='Are you sure you want to delete this entry?'><i class='fas fa-trash-alt'></i></a>"
+        : '';
+    $confirmationButton = $isAdmin && !$model->getIsCompleted()
+        ? "<a href='$path/completed' data-method='POST' data-confirm='Do you really want to complete this task?'><i class='fas fas fa-check'></i></a>"
         : '';
     return "<tr class='$rowClass'>
             <th scope=\"row\">{$index}</th>
             <td>{$model->getName()}</td>
             <td>{$model->getEmail()}</td>
             <td>{$model->getText()}</td>
+            <td>{$status}</td>
             <td class='actions'>$editButton $removeButton $confirmationButton </td>
         </tr>";
 });
+
+$emptyRow = "<tr>
+            <th scope=\"row\" style='width: 100%'>Task list is empty</th>
+        </tr>";
 ?>
 
 <?php
@@ -107,13 +117,18 @@ $paginationItems = (function ($currentPage, $tasksCount, $countOnPage) use ($pag
                 <th scope="col"><a href="<?= $generateSortLink('name') ?>" class="sort-item <?= $getSortItemClass('name') ?>">Name</a></th>
                 <th scope="col"><a href="<?= $generateSortLink('email') ?>" class="sort-item <?= $getSortItemClass('email') ?>">Email</a></th>
                 <th scope="col"><a href="<?= $generateSortLink('text') ?>" class="sort-item <?= $getSortItemClass('text') ?>">Text</a></th>
+                <th scope="col"><a href="<?= $generateSortLink('is_completed') ?>" class="sort-item <?= $getSortItemClass('is_completed') ?>">Status</a></th>
                 <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($tasks as $index => $task): ?>
-                <?= $rowTemplate(++$index, $task) ?>
-            <?php endforeach; ?>
+            <?php if (count($tasks)): ?>
+                <?php foreach ($tasks as $index => $task): ?>
+                    <?= $rowTemplate(++$index, $task) ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?= $emptyRow ?>
+            <?php endif; ?>
             </tbody>
         </table>
     </div>

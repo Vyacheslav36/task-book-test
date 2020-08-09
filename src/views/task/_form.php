@@ -16,7 +16,7 @@ $action = $type === 'Create' ? '/task/add' : "/task/{$model->getId()}/update";
     </div>
     <div class="form-group">
         <label for="emailFormControl">Email address</label>
-        <input type="email" class="form-control" name="email" id="emailFormControl" placeholder="name@example.com"
+        <input class="form-control" pattern="\S+@[a-z]+.[a-z]+" name="email" id="emailFormControl" placeholder="name@example.com"
                value="<?= $model->getEmail() ?>" required/>
     </div>
     <div class="form-group">

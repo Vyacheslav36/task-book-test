@@ -128,6 +128,10 @@ class TaskController extends Controller
      */
     public function update(ServerRequest $request)
     {
+        if (!$this->checkOnAuthorization('To edit, you must log in to the system.')) {
+            return new RedirectResponse(RouterHelper::getUrl('/auth'));
+        }
+
         $id = (int)$request->getAttribute('id');
         ['name' => $name, 'email' => $email, 'text' => $text] = $request->getParsedBody();
 
@@ -136,6 +140,7 @@ class TaskController extends Controller
         $model->setName($name);
         $model->setEmail($email);
         $model->setText($text);
+        $model->setIsEdited(true);
 
         if (!$model->save()) {
             FlashHelper::setFlash('alert', [
@@ -218,4 +223,19 @@ class TaskController extends Controller
         return $model;
     }
 
+    /**
+     * @param $text
+     * @return bool|RedirectResponse
+     */
+    private function checkOnAuthorization($text = 'You need to log in to the system.')
+    {
+        if (!LoginModel::isAuthorized()) {
+            FlashHelper::setFlash('alert', [
+                'options' => ['class' => 'alert-danger'],
+                'body' => $text
+            ]);
+            return false;
+        }
+        return true;
+    }
 }
