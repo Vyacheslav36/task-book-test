@@ -2,6 +2,7 @@
 /* @var \App\models\TaskModel $model */
 /* @var string $type */
 
+$this->params['title'] = "$type Task";
 $this->layout = 'layouts/base';
 
 $action = $type === 'Create' ? '/task/add' : "/task/{$model->getId()}/update";

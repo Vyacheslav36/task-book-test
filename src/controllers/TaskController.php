@@ -6,6 +6,7 @@ namespace App\controllers;
 use App\base\Controller;
 use App\helpers\FlashHelper;
 use App\helpers\RouterHelper;
+use App\models\LoginModel;
 use App\models\TaskModel;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -51,7 +52,8 @@ class TaskController extends Controller
             'currentPage' => (int)$page ?? 1,
             'countOnPage' => $countOnPage,
             'currentSort'=> $sort,
-            'currentSortType' => $sortType
+            'currentSortType' => $sortType,
+            'isAdmin' => LoginModel::isAuthorized()
         ]));
     }
 

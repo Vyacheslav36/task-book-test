@@ -4,6 +4,7 @@ use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
 use App\controllers\TaskController;
 use App\helpers\RouterHelper;
+use \App\controllers\AuthController;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -17,6 +18,8 @@ define('DB_PORT', $_ENV['DB_PORT']);
 define('DB_DATABASE', $_ENV['DB_DATABASE']);
 define('DB_USERNAME', $_ENV['DB_USERNAME']);
 define('DB_PASSWORD', $_ENV['DB_PASSWORD']);
+define('ADMIN_LOGIN', $_ENV['ADMIN_LOGIN']);
+define('ADMIN_PASSWORD', $_ENV['ADMIN_PASSWORD']);
 
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,
@@ -37,6 +40,12 @@ $map->attach('task.', \App\helpers\RouterHelper::getUrl('/task/{id}'), function 
     $map->get('edit', '/edit', [TaskController::class, 'edit']);
     $map->post('update', '/update', [TaskController::class, 'update']);
     $map->post('delete', '/delete', [TaskController::class, 'delete']);
+});
+
+$map->attach('auth.', \App\helpers\RouterHelper::getUrl('/auth'), function ($map) {
+    $map->get('auth', '', [AuthController::class, 'auth']);
+    $map->post('login', '/login', [AuthController::class, 'login']);
+    $map->post('logout', '/logout', [AuthController::class, 'logout']);
 });
 
 $matcher = $routerContainer->getMatcher();

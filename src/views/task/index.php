@@ -2,11 +2,12 @@
 /* @var array $tasks */
 /* @var int $tasksCount */
 /* @var int $currentPage */
+/* @var int $countOnPage */
 /* @var string $currentSort */
 /* @var string $currentSortType */
-/* @var int $countOnPage */
+/* @var bool $isAdmin */
 
-$this->params['title'] = 'Задачи';
+$this->params['title'] = 'Tasks';
 $this->layout = 'layouts/base';
 
 $homeUrl = \App\helpers\RouterHelper::getUrl();

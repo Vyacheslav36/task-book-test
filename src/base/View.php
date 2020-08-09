@@ -4,10 +4,13 @@
 namespace App\base;
 
 
+use App\models\LoginModel;
+
 class View
 {
     private $params = [];
     private $layout;
+    private $isAdmin = false;
 
     /**
      * @param $view

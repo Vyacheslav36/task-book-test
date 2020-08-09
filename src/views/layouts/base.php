@@ -3,9 +3,12 @@
 use \App\base\View;
 use \App\helpers\FlashHelper;
 use \App\helpers\RouterHelper;
+use App\models\LoginModel;
 
 /* @var array $params */
 /* @var string $content */
+
+$isAdmin = LoginModel::isAuthorized();
 ?>
 
 <!doctype html>
@@ -34,9 +37,15 @@ use \App\helpers\RouterHelper;
                 <li class="nav-item active">
                     <a class="nav-link" href="<?= RouterHelper::getUrl('/') ?>">Home</span></a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Login</span></a>
-                </li>
+                <?php if (!$isAdmin): ?>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="<?= RouterHelper::getUrl('/auth') ?>">Login</span></a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item active">
+                        <a class="nav-link" data-method="POST" data-confirm="Do you really want to leave?" href="<?= RouterHelper::getUrl('/auth/logout') ?>">Logout</span></a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
