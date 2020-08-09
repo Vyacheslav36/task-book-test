@@ -1,4 +1,9 @@
 <?php
+
+use \App\base\View;
+use \App\helpers\FlashHelper;
+use \App\helpers\RouterHelper;
+
 /* @var array $params */
 /* @var string $content */
 ?>
@@ -13,8 +18,8 @@
     <title><?= $this->params['title'] ?? 'App' ?></title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link href="<?= \App\helpers\RouterHelper::getUrl('/css/style.css') ?>" rel="stylesheet">
-    <script src="<?= \App\helpers\RouterHelper::getUrl('/js/index.js') ?>"></script>
+    <link href="<?= RouterHelper::getUrl('/css/style.css') ?>" rel="stylesheet">
+    <script src="<?= RouterHelper::getUrl('/js/index.js') ?>"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -27,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="<?= \App\helpers\RouterHelper::getUrl('/') ?>">Home</span></a>
+                    <a class="nav-link" href="<?= RouterHelper::getUrl('/') ?>">Home</span></a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Login</span></a>
@@ -37,6 +42,17 @@
     </div>
 </nav>
 <div class="container mt-5">
+    <?php if (FlashHelper::has('alert')): ?>
+        <?php
+            $value = FlashHelper::getFlash('alert');
+            $options = $value['options'] ?? [];
+            $body = $value['body'] ?? '';
+        ?>
+        <?= (new View())->render('alert/alert', [
+            'options' => $options,
+            'body' => $body
+        ]) ?>
+    <?php endif; ?>
     <?= $content ?>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"

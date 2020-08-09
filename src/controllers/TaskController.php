@@ -4,6 +4,7 @@
 namespace App\controllers;
 
 use App\base\Controller;
+use App\helpers\FlashHelper;
 use App\helpers\RouterHelper;
 use App\models\TaskModel;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -71,8 +72,17 @@ class TaskController extends Controller
         $model->setText($text);
 
         if (!$model->save()) {
-            return new HtmlResponse("<h1>500 - Error</h1>");
+            FlashHelper::setFlash('alert', [
+                'options' => ['class' => 'alert-danger'],
+                'body' => 'An error occurred while creating the task.'
+            ]);
+            return new RedirectResponse(RouterHelper::getUrl('/'));
         }
+
+        FlashHelper::setFlash('alert', [
+            'options' => ['class' => 'alert-success'],
+            'body' => 'Task added successfully.'
+        ]);
 
         return new RedirectResponse(RouterHelper::getUrl('/'));
     }
@@ -114,8 +124,17 @@ class TaskController extends Controller
         $model->setText($text);
 
         if (!$model->save()) {
-            return new HtmlResponse("<h1>500 - Error</h1>");
+            FlashHelper::setFlash('alert', [
+                'options' => ['class' => 'alert-danger'],
+                'body' => 'An error occurred while updating the task.'
+            ]);
+            return new RedirectResponse(RouterHelper::getUrl('/'));
         }
+
+        FlashHelper::setFlash('alert', [
+            'options' => ['class' => 'alert-success'],
+            'body' => 'The task was successfully updated.'
+        ]);
 
         return new RedirectResponse(RouterHelper::getUrl('/'));
     }
@@ -130,6 +149,11 @@ class TaskController extends Controller
         $id = (int) $request->getAttribute('id');
 
         $this->findModel($id)->delete();
+
+        FlashHelper::setFlash('alert', [
+            'options' => ['class' => 'alert-success'],
+            'body' => 'Task deleted successfully.'
+        ]);
 
         return new RedirectResponse(RouterHelper::getUrl('/'));
     }
