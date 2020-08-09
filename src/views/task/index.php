@@ -2,6 +2,8 @@
 /* @var array $tasks */
 /* @var int $tasksCount */
 /* @var int $currentPage */
+/* @var string $currentSort */
+/* @var string $currentSortType */
 /* @var int $countOnPage */
 
 $this->params['title'] = 'Задачи';
@@ -27,31 +29,51 @@ $rowTemplate = (function ($index, \App\models\TaskModel $model) {
 ?>
 
 <?php
-$previousLink = (function ($currentPage) use ($homeUrl) {
+$generatePaginationLink = (function ($page) use ($currentSort, $homeUrl) {
+    return $currentSort
+        ? "$homeUrl?sort=$currentSort&page=$page"
+        : "$homeUrl?page=$page";
+});
+
+$generateSortLink = (function ($name) use ($currentSort, $currentPage, $homeUrl) {
+    $sortName = $currentSort === $name ? "-$name" : $name;
+    return $currentPage
+        ? "$homeUrl?page=$currentPage&sort=$sortName"
+        : "$homeUrl?sort=$sortName";
+});
+
+$getSortItemClass = (function ($name) use ($currentSort, $currentSortType) {
+    if (str_replace('-', '', $currentSort) === $name) {
+        return $currentSortType === 'ASC' ? 'asc' : 'desc';
+    }
+    return '';
+});
+
+$previousLink = (function ($currentPage) use ($generatePaginationLink, $homeUrl) {
     $isDisabled = $currentPage <= 1;
     $class = $isDisabled ? 'disabled' : '';
     $previousPage = $currentPage > 1 ? --$currentPage : 1;
     return "<li class=\"page-item {$class}\">
-                <a class=\"page-link\" href=\"$homeUrl?page=$previousPage\" aria-label=\"Previous\">
+                <a class=\"page-link\" href=\"{$generatePaginationLink($previousPage)}\" aria-label=\"Previous\">
                     <span aria-hidden=\"true\">&laquo;</span>
                 </a>
             </li>";
 });
 
-$nextLink = (function ($currentPage, $tasksCount) use ($homeUrl) {
+$nextLink = (function ($currentPage, $tasksCount) use ($generatePaginationLink, $homeUrl) {
     $isDisabled = ($currentPage * 3) >= $tasksCount;
     $class = $isDisabled ? 'disabled' : '';
     $nextPage = $currentPage > 1 ? ++$currentPage : 2;
     return "<li class=\"page-item {$class}\">
-                <a class=\"page-link\" href=\"$homeUrl?page=$nextPage\" aria-label=\"Next\">
+                <a class=\"page-link\" href=\"{$generatePaginationLink($nextPage)}\" aria-label=\"Next\">
                     <span aria-hidden=\"true\">&raquo;</span>
                 </a>
             </li>";
 });
 
-$paginationItem = (function ($page, $active) use ($homeUrl) {
+$paginationItem = (function ($page, $active) use ($generatePaginationLink, $homeUrl) {
     $class = $active ? 'active' : '';
-    return "<li class=\"page-item {$class}\"><a class=\"page-link\" href=\"$homeUrl?page=$page\">$page</a></li>";
+    return "<li class=\"page-item {$class}\"><a class=\"page-link\" href=\"{$generatePaginationLink($page)}\">$page</a></li>";
 });
 
 $paginationItems = (function ($currentPage, $tasksCount, $countOnPage) use ($paginationItem) {
@@ -72,9 +94,9 @@ $paginationItems = (function ($currentPage, $tasksCount, $countOnPage) use ($pag
             <thead class="thead-dark">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Text</th>
+                <th scope="col"><a href="<?= $generateSortLink('name') ?>" class="sort-item <?= $getSortItemClass('name') ?>">Name</a></th>
+                <th scope="col"><a href="<?= $generateSortLink('email') ?>" class="sort-item <?= $getSortItemClass('email') ?>">Email</a></th>
+                <th scope="col"><a href="<?= $generateSortLink('text') ?>" class="sort-item <?= $getSortItemClass('text') ?>">Text</a></th>
                 <th scope="col"></th>
             </tr>
             </thead>

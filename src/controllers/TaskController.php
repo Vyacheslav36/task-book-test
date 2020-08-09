@@ -20,6 +20,9 @@ class TaskController extends Controller
     {
         $countOnPage = 3;
         $page = null;
+        $sort = null;
+        $sortType = null;
+
         $tasksCount = (new TaskModel())
             ->find()
             ->count();
@@ -28,11 +31,16 @@ class TaskController extends Controller
 
         $query = $request->getQueryParams();
         if (count($query)) {
-           $page = isset($query['page']) ? $query['page'] : null;
-           if ($page && $tasksCount > 0 && (($countOnPage * $page) - $countOnPage) < $tasksCount) {
-               $limit = ($countOnPage * $page) - $countOnPage;
-               $tasks->limit("$limit, $countOnPage");
-           }
+            $sort = isset($query['sort']) ? $query['sort'] : null;
+            if ($sort) {
+                $sortType = strpos($sort, '-') === 0 ? 'DESC' : 'ASC';
+                $tasks->orderBy($sort, $sortType);
+            }
+            $page = isset($query['page']) ? $query['page'] : null;
+            if ($page && $tasksCount > 0 && (($countOnPage * $page) - $countOnPage) < $tasksCount) {
+                $limit = ($countOnPage * $page) - $countOnPage;
+                $tasks->limit("$limit, $countOnPage");
+            }
         } else {
             $tasks->limit($countOnPage);
         }
@@ -40,8 +48,10 @@ class TaskController extends Controller
         return new HtmlResponse($this->view->render('task/index', [
             'tasks' => $tasks->execute(),
             'tasksCount' => $tasksCount,
-            'currentPage' => (int) $page ?? 1,
-            'countOnPage' => $countOnPage
+            'currentPage' => (int)$page ?? 1,
+            'countOnPage' => $countOnPage,
+            'currentSort'=> $sort,
+            'currentSortType' => $sortType
         ]));
     }
 
@@ -94,7 +104,7 @@ class TaskController extends Controller
      */
     public function edit(ServerRequest $request)
     {
-        $id = (int) $request->getAttribute('id');
+        $id = (int)$request->getAttribute('id');
         $model = $this->findModel($id);
 
         if (!$model) {
@@ -114,7 +124,7 @@ class TaskController extends Controller
      */
     public function update(ServerRequest $request)
     {
-        $id = (int) $request->getAttribute('id');
+        $id = (int)$request->getAttribute('id');
         ['name' => $name, 'email' => $email, 'text' => $text] = $request->getParsedBody();
 
         $model = $this->findModel($id);
@@ -146,7 +156,7 @@ class TaskController extends Controller
      */
     public function delete(ServerRequest $request)
     {
-        $id = (int) $request->getAttribute('id');
+        $id = (int)$request->getAttribute('id');
 
         $this->findModel($id)->delete();
 

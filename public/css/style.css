@@ -15,3 +15,34 @@ td.actions i:focus {
 .overflow-x {
     overflow-x: auto;
 }
+.sort-item {
+    color: #ffffff;
+}
+
+.sort-item:hover,
+.sort-item:after {
+    color: #c4c5c5;
+    text-decoration: none;
+}
+
+.sort-item:after {
+    content: "\f0dc";
+    font-family: "Font Awesome 5 Free";
+    font-size: 1rem;
+    color: #fff;
+    margin-left: 10px;
+}
+.sort-item.asc:after {
+    content: "\f0de";
+    font-family: "Font Awesome 5 Free";
+    font-size: 1rem;
+    color: #fff;
+    margin-left: 10px;
+}
+.sort-item.desc:after {
+    content: "\f0dd";
+    font-family: "Font Awesome 5 Free";
+    font-size: 1rem;
+    color: #fff;
+    margin-left: 10px;
+}
