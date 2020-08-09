@@ -1,4 +1,7 @@
 <?php
+
+use App\helpers\RouterHelper;
+
 /* @var array $tasks */
 /* @var int $tasksCount */
 /* @var int $currentPage */
@@ -10,21 +13,27 @@
 $this->params['title'] = 'Tasks';
 $this->layout = 'layouts/base';
 
-$homeUrl = \App\helpers\RouterHelper::getUrl();
+$homeUrl = RouterHelper::getUrl();
 ?>
 
 <?php
-$rowTemplate = (function ($index, \App\models\TaskModel $model) {
+$rowTemplate = (function ($index, \App\models\TaskModel $model) use ($isAdmin) {
     $rowClass = $model->getIsCompleted() ? 'completed' : '';
-    $path = \App\helpers\RouterHelper::getUrl("/task/{$model->getId()}");
-    $editButton = "<a href='$path/edit'><i class='fas fa-pencil-alt'></i></a>";
-    $removeButton = "<a href='$path/delete' data-method='POST' data-confirm='Are you sure you want to delete this entry?'><i class='fas fa-trash-alt'></i></a>";
+    $path = RouterHelper::getUrl("/task/{$model->getId()}");
+    $editPath = $model->getIsCompleted() ? '#' : "$path/edit";
+    $removePath = $model->getIsCompleted() ? '#' : "$path/delete";
+    $confirmationPath = $model->getIsCompleted() ? '#' : "$path/completed";
+    $editButton = "<a href='$editPath'><i class='fas fa-pencil-alt'></i></a>";
+    $removeButton = "<a href='$removePath' data-method='POST' data-confirm='Are you sure you want to delete this entry?'><i class='fas fa-trash-alt'></i></a>";
+    $confirmationButton = $isAdmin
+        ? "<a href='$confirmationPath' data-method='POST' data-confirm='Do you really want to complete this task?'><i class='fas fas fa-check'></i></a>"
+        : '';
     return "<tr class='$rowClass'>
             <th scope=\"row\">{$index}</th>
             <td>{$model->getName()}</td>
             <td>{$model->getEmail()}</td>
             <td>{$model->getText()}</td>
-            <td class='actions'>$editButton $removeButton</td>
+            <td class='actions'>$editButton $removeButton $confirmationButton </td>
         </tr>";
 });
 ?>
@@ -89,7 +98,7 @@ $paginationItems = (function ($currentPage, $tasksCount, $countOnPage) use ($pag
 ?>
 
 <div>
-    <a href="<?= \App\helpers\RouterHelper::getUrl('/task/create') ?>" class="btn btn-dark mb-3">Create Task</a>
+    <a href="<?= RouterHelper::getUrl('/task/create') ?>" class="btn btn-dark mb-3">Create Task</a>
     <div class="overflow-x">
         <table class="table">
             <thead class="thead-dark">

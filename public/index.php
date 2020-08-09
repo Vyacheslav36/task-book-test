@@ -40,6 +40,7 @@ $map->attach('task.', \App\helpers\RouterHelper::getUrl('/task/{id}'), function 
     $map->get('edit', '/edit', [TaskController::class, 'edit']);
     $map->post('update', '/update', [TaskController::class, 'update']);
     $map->post('delete', '/delete', [TaskController::class, 'delete']);
+    $map->post('completed', '/completed', [TaskController::class, 'completed']);
 });
 
 $map->attach('auth.', \App\helpers\RouterHelper::getUrl('/auth'), function ($map) {

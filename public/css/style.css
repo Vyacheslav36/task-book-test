@@ -18,7 +18,9 @@ td.actions i:focus {
 .sort-item {
     color: #ffffff;
 }
-
+.table {
+    position: relative;
+}
 .sort-item:hover,
 .sort-item:after {
     color: #c4c5c5;
@@ -45,4 +47,24 @@ td.actions i:focus {
     font-size: 1rem;
     color: #fff;
     margin-left: 10px;
+}
+tr.completed {
+    opacity: 0.5;
+}
+tr.completed a {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+}
+td, th {
+    position: relative;
+}
+tr.completed td:before,
+tr.completed th:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px solid #111;
+    width: 100%;
 }

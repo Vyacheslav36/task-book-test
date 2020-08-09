@@ -41,6 +41,8 @@ class TaskController extends Controller
             if ($page && $tasksCount > 0 && (($countOnPage * $page) - $countOnPage) < $tasksCount) {
                 $limit = ($countOnPage * $page) - $countOnPage;
                 $tasks->limit("$limit, $countOnPage");
+            } else {
+                $tasks->limit($countOnPage);
             }
         } else {
             $tasks->limit($countOnPage);
@@ -165,6 +167,35 @@ class TaskController extends Controller
         FlashHelper::setFlash('alert', [
             'options' => ['class' => 'alert-success'],
             'body' => 'Task deleted successfully.'
+        ]);
+
+        return new RedirectResponse(RouterHelper::getUrl('/'));
+    }
+
+    /**
+     * @param ServerRequest $request
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function completed(ServerRequest $request)
+    {
+        $id = (int)$request->getAttribute('id');
+
+        $model = $this->findModel($id);
+
+        $model->setIsCompleted(true);
+
+        if (!$model->save()) {
+            FlashHelper::setFlash('alert', [
+                'options' => ['class' => 'alert-danger'],
+                'body' => 'Error completing task.'
+            ]);
+            return new RedirectResponse(RouterHelper::getUrl('/'));
+        }
+
+        FlashHelper::setFlash('alert', [
+            'options' => ['class' => 'alert-success'],
+            'body' => 'Task completed successfully.'
         ]);
 
         return new RedirectResponse(RouterHelper::getUrl('/'));
